@@ -5,13 +5,15 @@ let aReceber ='Todos'
  
 
 
-function executarLogin(){
+async function executarLogin(){
     let userName = document.querySelector('.initial-text').value
     userUser = userName
 
     let sendLogin = axios.post("https://mock-api.driven.com.br/api/v6/uol/participants", {name: userName});
-    sendLogin.then(mostrarChat)
+    await sendLogin.then(mostrarChat)
     sendLogin.catch(falhaAoLogar)
+
+    
 }
 
 function estaOnline(){
@@ -19,13 +21,18 @@ function estaOnline(){
 }
 
 getMessages.then(listaDeMensagens)
+
 function listaDeMensagens(mensagensServidor){
+    
+    console.log(typeof(mensagensServidor))
+
+    const listaMensagens = mensagensServidor.data
 
     let mensagem = document.querySelector('.conteudo-site')
 
-    for(let i = 0 ; i < mensagensServidor.data.length ; i++){
+    for(let i = 0 ; i < listaMensagens.length ; i++){
         
-        if(mensagensServidor.data[i].type == "message"){
+        if(listaMensagens[i].type == "message"){
             mensagem.innerHTML += `
             <div class="mensagem msg">
                 <span>&#40;${mensagensServidor.data[i].time}&#41;</span>
@@ -33,7 +40,7 @@ function listaDeMensagens(mensagensServidor){
                 <span>${mensagensServidor.data[i].text}</span>
             </div>
         `
-        } else if(mensagensServidor.data[i].type == "status"){
+        } else if(listaMensagens[i].type == "status"){
             mensagem.innerHTML += `
             <div class="entrou-saiu msg">
                 <span>&#40;${mensagensServidor.data[i].time}&#41;</span>
@@ -41,7 +48,7 @@ function listaDeMensagens(mensagensServidor){
                 <span>${mensagensServidor.data[i].text}</span>
             </div>
         `
-        } else if(mensagensServidor.data[i].type == "private_mensage"){
+        } else if(listaMensagens[i].type == "private_mensage"){
             mensagem.innerHTML += `
             <div class="reservadamente msg">
                 <span>&#40;${mensagensServidor.data[i].time}&#41;</span>
@@ -70,9 +77,10 @@ function mostrarChat(){
 getParticipants.then(listaDeContatos)
 function listaDeContatos(respostaServidor){
 
+    const listaContatos = respostaServidor.data
     let pessoas = document.querySelector('.m-site-pessoas')
     
-    for(let i = 0 ; i < respostaServidor.data.length ; i++){
+    for(let i = 0 ; i < listaContatos.length ; i++){
         pessoas.innerHTML += `
                 <div class="m-site-pessoa">
                     <img src="../imagens/persona.png" alt="">
@@ -85,12 +93,12 @@ function listaDeContatos(respostaServidor){
 
 function sendMessage(){
 
-    let texto = document.querySelector('.caixa-rodape').value
+    let texto = document.querySelector('.caixa-rodape')
     
     let msgEnviar = {
         from: userUser,     
         to: aReceber,
-        text: texto,
+        text: texto.value,
         type: "message"
     }
 
@@ -136,4 +144,5 @@ function falhaAoLogar(item) {
 
 
 setInterval(listaDeMensagens, 3000);
-setInterval(listaDeContatos, 3000);
+setInterval(listaDeContatos, 10000);
+setInterval(estaOnline, 5000) 
