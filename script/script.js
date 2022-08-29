@@ -1,25 +1,78 @@
-let pessoasNaSala = []
-
-const getAPI = axios.get('https://mock-api.driven.com.br/api/v6/uol/participants')
-
-const nome = window.prompt('Entre com seu nome de usuário:')
-const nameUser = {name:nome}
-
-axios.post('https://mock-api.driven.com.br/api/v6/uol/participants', nameUser)
+const getParticipants = axios.get("https://mock-api.driven.com.br/api/v6/uol/participants");
+const getMessages = axios.get("https://mock-api.driven.com.br/api/v6/uol/messages");
+let userUser;
+let aReceber ='Todos'
+ 
 
 
+function executarLogin(){
+    let userName = document.querySelector('.initial-text').value
+    userUser = userName
+
+    let sendLogin = axios.post("https://mock-api.driven.com.br/api/v6/uol/participants", {name: userName});
+    sendLogin.then(mostrarChat)
+    sendLogin.catch(falhaAoLogar)
+}
+
+function estaOnline(){
+    axios.post("https://mock-api.driven.com.br/api/v6/uol/status", {name: userUser});
+}
+
+getMessages.then(listaDeMensagens)
+function listaDeMensagens(mensagensServidor){
+
+    let mensagem = document.querySelector('.conteudo-site')
+
+    for(let i = 0 ; i < mensagensServidor.data.length ; i++){
+        
+        if(mensagensServidor.data[i].type == "message"){
+            mensagem.innerHTML += `
+            <div class="mensagem msg">
+                <span>&#40;${mensagensServidor.data[i].time}&#41;</span>
+                <span><span class="negrito">${mensagensServidor.data[i].from}</span> para <span class="negito">${mensagensServidor.data[i].to}</span>:</span>
+                <span>${mensagensServidor.data[i].text}</span>
+            </div>
+        `
+        } else if(mensagensServidor.data[i].type == "status"){
+            mensagem.innerHTML += `
+            <div class="entrou-saiu msg">
+                <span>&#40;${mensagensServidor.data[i].time}&#41;</span>
+                <span><span class="negrito">${mensagensServidor.data[i].from}</span> para <span class="negito">${mensagensServidor.data[i].to}</span>:</span>
+                <span>${mensagensServidor.data[i].text}</span>
+            </div>
+        `
+        } else if(mensagensServidor.data[i].type == "private_mensage"){
+            mensagem.innerHTML += `
+            <div class="reservadamente msg">
+                <span>&#40;${mensagensServidor.data[i].time}&#41;</span>
+                <span><span class="negrito">${mensagensServidor.data[i].from}</span> para <span class="negito">${mensagensServidor.data[i].to}</span>:</span>
+                <span>${mensagensServidor.data[i].text}</span>
+            </div>
+        `
+        }     
+    }
+    let ultimaMsg = document.querySelectorAll('.msg')
+    ultimaMsg[ultimaMsg.length-1].scrollIntoView()
+}
 
 
+function mostrarChat(){
+    const pagina = document.querySelector('.initial-style')
 
-getAPI.then(listaDeContatos)
+    pagina.classList.add('show')
 
+    setInterval(listaDeContatos, 3000);
+    setInterval(estaOnline, 5000);
+
+}
+
+
+getParticipants.then(listaDeContatos)
 function listaDeContatos(respostaServidor){
 
     let pessoas = document.querySelector('.m-site-pessoas')
     
     for(let i = 0 ; i < respostaServidor.data.length ; i++){
-        console.log(respostaServidor.data[i].name)
-
         pessoas.innerHTML += `
                 <div class="m-site-pessoa">
                     <img src="../imagens/persona.png" alt="">
@@ -30,18 +83,57 @@ function listaDeContatos(respostaServidor){
 }
 
 
-//setInterval(funcao, 1000ms)
+function sendMessage(){
 
-// ***** Botões do Menu ******************************************************************
+    let texto = document.querySelector('.caixa-rodape').value
+    
+    let msgEnviar = {
+        from: userUser,     
+        to: aReceber,
+        text: texto,
+        type: "message"
+    }
 
-function showMenu(){
-    const item = document.querySelector('.menu-site')
-    item.classList.toggle('menu-site-aparecer')
+    axios.post('https://mock-api.driven.com.br/api/v6/uol/messages', msgEnviar) 
+    texto.value = ""
 }
 
-function hideMenu(){
-    const item = document.querySelector('.menu-site')
-    item.classList.toggle('menu-site-aparecer')
+
+function selecionaCadeado(){
+    let cadeadoSelecionado = document.querySelector('.icon1')
+    let cadeadoSelecionado1 = document.querySelector('.icon2')
+
+    cadeadoSelecionado.classList.toggle('show')
+    cadeadoSelecionado1.classList.toggle('show')
 }
 
-// ***** Acrescentar pessoas na sala ******************************************************
+
+
+// ***** MENU MOSTRAR E ESCONDER *************************************************************
+
+function showMenu() {
+    const menu = document.querySelector('.menu-site')
+    menu.classList.add('menu-site-aparecer')
+}
+
+function hideMenu() {
+    const menu = document.querySelector('.menu-site')
+    menu.classList.remove('menu-site-aparecer')
+    
+}
+
+// ***** ERROS AO EXECUTAR LOGIN *************************************************************
+
+function falhaAoLogar(item) {
+
+    if(item.response.status == 400) 
+        alert("[ERRO] NickName já está sendo utilizado, por favor escolha outro.");
+    else
+        mostrarChat();
+} 
+
+
+
+
+setInterval(listaDeMensagens, 3000);
+setInterval(listaDeContatos, 3000);

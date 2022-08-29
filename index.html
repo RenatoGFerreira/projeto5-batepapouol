@@ -4,23 +4,85 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/style.css">
-    <title>projeto5-batepapouol</title>
+    <title>batePapo-uol</title>
 </head>
-<body class="body-style">
-    <header class="topo-site">
-        <a class="logo" href="#">
-            <img src="./imagens/logo 2.png" alt="logo bate papo uol">
-        </a>
-    </header>
-    <main class="corpo-site">
-        <input class="caixa-texto" type="text" placeholder="Digite seu nome">
-        <input class="button-enter" type="button" value="Entrar">
-    </main>
-    <footer class="rodape-site">
 
-    </footer>  
-    <script src="script/script.js"></script>
+<body class="body-style">
+    <section class="initial-style">
+        <img src="imagens/logo 2.png" class="initial-logo">
+        <input type="text" placeholder="Digite seu nome" class="initial-text">
+        <button class="initial-button" onclick="executarLogin();">Entrar</button>
+    </section>
+    <section class="body-style">
+        <header class="topo-site">
+            <img src="../imagens/logo 2.png" alt="logo" class="logo-topo">
+            <img src="../imagens/menu.png" alt="logo" class="menu-topo" onclick="showMenu()">  
+        </header>
+        <section class="meio-site msg">
+            <div class="conteudo-site">
+                <div class="entrou-saiu">
+                    <span>&#40;11:26:32&#41;</span>
+                    <span>João entra na sala...</span>
+                </div>
+                <div class="mensagem msg">
+                    <span>&#40;11:26:54&#41;</span>
+                    <span><span class="negrito">João</span> para <span class="negrito">Todos</span>:</span>
+                    <span>Bom dia</span>
+                </div>
+                <div class="mensagem msg">
+                    <span>&#40;11:26:54&#41;</span>
+                    <span><span class="negrito">Maria</span> para <span class="negrito">João</span>:</span>
+                    <span>Oi João : )</span>
+                </div>
+                <div class="reservadamente msg">
+                    <span>&#40;11:26:34&#41;</span>
+                    <span>João reservadamente para Maria</span>
+                    <span>Oi gatinha quer tc?</span>
+                </div>
+                <div class="entrou-saiu msg">
+                    <span>&#40;11:26:32&#41;</span>
+                    <span>Maria sai da sala...</span>
+                </div> <!-- AQUI FINALIZOU --> 
+            </div>   
+        </section>
+        <footer class="rodape-site">
+            <input type="text" placeholder="Escreva Aqui..." class="caixa-rodape">
+            <img src="../imagens/send.png" alt="enviar" class="enviar-rodape" onclick="sendMessage()">
+        </footer>
+        <nav class="menu-site">
+            <div class="menu-site-conteudo">
+                <div class="m-site-texto" onclick="hideMenu()">
+                        <span>Escolha um contato para enviar mensagem:</span>
+                </div>
+                <div class="m-site-pessoas">
+                    <div class="m-site-pessoa">
+                        <img src="../imagens/menu.png" alt="">
+                        <span>Todos</span>
+                    </div> 
+                </div>
+                <div class="m-site-visibilidade">
+                    <span>Escolha a visibilidade:</span>
+                </div>
+                <div class="m-site-cadeados">
+                    <div class="m-site-cadeado" onclick="selecionaCadeado()">
+                        <img src="../imagens/cadeado-aberto.png" alt="">
+                        <span>publico</span>
+                        <ion-icon class="check icon1" name="checkmark"></ion-icon>
+                    </div>
+                    <div class="m-site-cadeado" onclick="selecionaCadeado()">
+                        <img src="../imagens/cadeado-aberto.png" alt="">
+                        <span>privado</span>
+                        <ion-icon class="check icon2 show" name="checkmark"></ion-icon>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="../script/script.js"></script>
+    </section>
 </body>
 </html>
